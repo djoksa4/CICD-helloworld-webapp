@@ -41,13 +41,13 @@ pipeline {
 
         stage('Unpack and Replace the Docker Image') {
             steps {
-
-                sh 'ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/A4L.pem ec2-user@10.0.0.73 " \
-docker stop $(docker ps -q) && \
-docker rm $(docker ps -aq) && \
-docker rmi cicd-helloworld-webapp:latest && \
-docker load -i /home/ec2-user/cicd-helloworld-webapp-latest.tar && \
-"'
+// SSH to remote server and execute all commands
+        sh 'ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/A4L.pem ec2-user@10.0.0.73 " \
+            docker stop $(docker ps -q) && \
+            docker rm $(docker ps -aq) && \
+            docker rmi cicd-helloworld-webapp:latest && \
+            docker load -i /home/ec2-user/cicd-helloworld-webapp-latest.tar \
+            "'
             }
         }
 
