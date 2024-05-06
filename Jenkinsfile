@@ -27,10 +27,8 @@ pipeline {
 
         stage('Save Docker Image Locally') {
             steps {
-                // Save the Docker image locally
-                script {
-                    docker.image("cicd-helloworld-webapp:latest").save("cicd-helloworld-webapp-latest.tar")
-                }
+        // Save Docker image as a tar file
+        sh 'docker save -o cicd-helloworld-webapp-latest.tar cicd-helloworld-webapp:latest'
             }
         }
     }
