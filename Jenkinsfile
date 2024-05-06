@@ -16,6 +16,15 @@ pipeline {
             }
         }
     }
+
+    stage('Build Docker Image') {
+            steps {
+                // Build the Docker image using the provided Dockerfile
+                script {
+                    docker.build("cicd-helloworld-webapp:latest")
+                }
+            }
+        }
     
     post {
         success {
