@@ -15,9 +15,8 @@ pipeline {
                 sh 'mvn clean package'
             }
         }
-    }
 
-    stage('Build Docker Image') {
+        stage('Build Docker Image') {
             steps {
                 // Build the Docker image using the provided Dockerfile
                 script {
@@ -25,6 +24,7 @@ pipeline {
                 }
             }
         }
+    }
     
     post {
         success {
