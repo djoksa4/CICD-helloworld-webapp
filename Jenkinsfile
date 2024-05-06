@@ -35,7 +35,7 @@ pipeline {
         stage('Copy Docker Image to Remote Server') {
             steps {
         // Copy Docker image to remote server using scp with key-based authentication
-        sh 'sudo scp -o StrictHostKeyChecking=no -i /home/ec2-user/.ssh/A4L.pem cicd-helloworld-webapp-latest.tar ec2-user@10.0.0.73:/home/ec2-user'
+        sh 'scp -o StrictHostKeyChecking=no -i /home/ec2-user/.ssh/A4L.pem cicd-helloworld-webapp-latest.tar ec2-user@10.0.0.73:/home/ec2-user'
             }
         }
 
