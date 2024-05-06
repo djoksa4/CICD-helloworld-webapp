@@ -31,6 +31,19 @@ pipeline {
         sh 'docker save -o cicd-helloworld-webapp-latest.tar cicd-helloworld-webapp:latest'
             }
         }
+
+        stage('Copy Docker Image to Remote Server') {
+            steps {
+        // Copy Docker image to remote server using scp with key-based authentication
+        sh 'scp -o StrictHostKeyChecking=no -i /home/ec2-user/.ssh/A4L.pem cicd-helloworld-webapp-latest.tar ec2-user@10.0.0.73:/home/ec2-user'
+            }
+        }
+
+        stage('Unpack Docker Image') {
+            steps {
+                sh 'ssh -o StrictHostKeyChecking=no -i /home/ec2-user/.ssh/A4L.pem ec2-user@10.0.0.73 "docker load -i /home/ec2-user/cicd-helloworld-webapp-latest.tar"'
+            }
+        }
     }
     
     post {
