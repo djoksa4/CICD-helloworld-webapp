@@ -39,7 +39,7 @@ pipeline {
             }
         }
 
-        stage('Unpack and Replace the Docker Image') {
+        stage('Unpack and Replace Docker Image - Run Container') {
             steps {
 // SSH to remote server and execute all commands
         sh 'ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/A4L.pem ec2-user@10.0.0.73 "\
@@ -53,14 +53,8 @@ pipeline {
             fi; \
             docker rmi cicd-helloworld-webapp:latest; \
             docker load -i /home/ec2-user/cicd-helloworld-webapp-latest.tar; \
+            docker run -d -p 8200:8080 --name cicd-helloworld-webapp cicd-helloworld-webapp:latest \
             "'
-            }
-        }
-
-        stage('Spin Up New Container') {
-            steps {
-                // Spin up a new container from the unpacked image, mapping it to host port 8200
-                sh 'sudo docker run -d -p 8200:8080 --name cicd-helloworld-webapp cicd-helloworld-webapp:latest'
             }
         }
     }
