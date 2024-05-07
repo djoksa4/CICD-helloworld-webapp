@@ -44,19 +44,9 @@ pipeline {
                 // SSH to remote server and execute all commands
                 script {
                     sshScript = '''
-                CONTAINER_NAME="cicd-helloworld-webapp"
-                CONTAINER_RUNNING=$(docker ps -q --filter "name=$CONTAINER_NAME")
-                CONTAINER_ALL=$(docker ps -aq --filter "name=$CONTAINER_NAME")
-
-                if [ -n "$CONTAINER_RUNNING" ]; then
-                    docker stop $CONTAINER_RUNNING
-                fi
-                
-                if [ -n "$CONTAINER_ALL" ]; then
-                    docker rm $CONTAINER_ALL
-                fi
-
-                docker rmi cicd-helloworld-webapp:latest || true
+                if [ "$(docker ps -q)" ]; then docker stop $(docker ps -q); fi
+                docker rm -f $(docker ps -aq) 2>/dev/null || true
+                docker rmi cicd-helloworld-webapp:latest 2>/dev/null || true
                 docker load -i /home/ec2-user/cicd-helloworld-webapp-latest.tar
                 docker run -d -p 8200:8080 --name $CONTAINER_NAME cicd-helloworld-webapp:latest
             '''
