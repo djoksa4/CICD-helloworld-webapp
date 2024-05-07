@@ -27,14 +27,14 @@ pipeline {
 
         stage('Save Docker Image Locally') {
             steps {
-        // Save Docker image as a tar file
-        sh 'docker save -o cicd-helloworld-webapp-latest.tar cicd-helloworld-webapp:latest'
+                // Save Docker image as a tar file
+                sh 'docker save -o cicd-helloworld-webapp-latest.tar cicd-helloworld-webapp:latest'
             }
         }
 
         stage('Remove the previous packed Image from the remote server') {
             steps {
-                sh """ ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/A4L.pem ec2-user@10.0.0.73 "rm cicd-helloworld-webapp-latest.tar" """
+                sh """ ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/A4L.pem ec2-user@10.0.0.73 "rm -f cicd-helloworld-webapp-latest.tar" """
             }
         }
 
