@@ -47,7 +47,7 @@ pipeline {
 
         stage('Remove all Docker Containers') {
             steps {
-                sh """ ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/A4L.pem ec2-user@10.0.0.73 "docker rm -f $(docker ps -aq) 2>/dev/null || true" """
+                sh """ ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/A4L.pem ec2-user@10.0.0.73 "docker rm -f '\$(docker ps -aq)' 2>/dev/null || true" """
             }
         }
 
