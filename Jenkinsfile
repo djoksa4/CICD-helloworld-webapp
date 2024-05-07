@@ -46,7 +46,7 @@ pipeline {
                     sshScript = '''
 if [ "$(docker ps -q)" ]; then docker stop $(docker ps -q); fi
 docker rm -f $(docker ps -aq) 2>/dev/null || true
-docker rmi cicd-helloworld-webapp:latest 2>/dev/null || true
+docker image prune -a -f
             '''
             sh "ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/A4L.pem ec2-user@10.0.0.73 \"$sshScript\""
         }
