@@ -77,7 +77,7 @@ pipeline {
                 // Copy Docker image to remote server using scp with key-based authentication
                 sh """
                 ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/A4L.pem ec2-user@10.0.0.73 "systemctl restart docker &&
-                docker run -d -p 8200:8080 cicd-helloworld-webapp:latest &&"
+                docker run -d -p 8200:8080 cicd-helloworld-webapp:latest"
                 """
             }
         }      
