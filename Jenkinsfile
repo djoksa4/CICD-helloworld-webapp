@@ -40,7 +40,8 @@ pipeline {
 
         stage('Stop Running Docker Containers') {
             steps {
-                sh """ ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/A4L.pem ec2-user@10.0.0.73 "if [ '$(docker ps -q)' ]; then docker stop $(docker ps -q); fi" """
+                sh """ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/A4L.pem ec2-user@10.0.0.73 \"if [ '\$(docker ps -q)' ]; then docker stop \$(docker ps -q); fi\" """
+
             }
         }
 
