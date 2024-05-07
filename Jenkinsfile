@@ -41,22 +41,29 @@ pipeline {
 
         stage('Unpack and Replace Docker Image - Run Container') {
             steps {
-// SSH to remote server and execute all commands
-        sh 'ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/A4L.pem ec2-user@10.0.0.73 "\
-            CONTAINERS_RUNNING=$(docker ps -q); \
-            CONTAINERS_ALL=$(docker ps -aq); \
-            if [ -n \"$CONTAINERS_RUNNING\" ]; then \
-                docker stop $CONTAINERS_RUNNING; \
-            fi; \
-            if [ -n \"$CONTAINERS_ALL\" ]; then \
-                docker rm $CONTAINERS_ALL; \
-            fi; \
-            docker rmi cicd-helloworld-webapp:latest; \
-            docker load -i /home/ec2-user/cicd-helloworld-webapp-latest.tar; \
-            docker run -d -p 8200:8080 --name cicd-helloworld-webapp cicd-helloworld-webapp:latest \
-            "'
-            }
+                // SSH to remote server and execute all commands
+                script {
+                    sshScript = '''
+                CONTAINER_NAME="cicd-helloworld-webapp"
+                CONTAINER_RUNNING=$(docker ps -q --filter "name=$CONTAINER_NAME")
+                CONTAINER_ALL=$(docker ps -aq --filter "name=$CONTAINER_NAME")
+
+                if [ -n "$CONTAINER_RUNNING" ]; then
+                    docker stop $CONTAINER_RUNNING
+                fi
+                
+                if [ -n "$CONTAINER_ALL" ]; then
+                    docker rm $CONTAINER_ALL
+                fi
+
+                docker rmi cicd-helloworld-webapp:latest || true
+                docker load -i /home/ec2-user/cicd-helloworld-webapp-latest.tar
+                docker run -d -p 8200:8080 --name $CONTAINER_NAME cicd-helloworld-webapp:latest
+            '''
+            sh "ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/A4L.pem ec2-user@10.0.0.73 \"$sshScript\""
         }
+    }
+}
     }
     
     post {
