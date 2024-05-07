@@ -39,7 +39,7 @@ pipeline {
             }
         }
 
-        stage('Unpack and Replace Docker Image - Run Container') {
+        stage('Stop and Remove previous Containers and Image') {
             steps {
                 // SSH to remote server and execute all commands
                 script {
@@ -47,14 +47,25 @@ pipeline {
                 if [ "$(docker ps -q)" ]; then docker stop $(docker ps -q); fi
                 docker rm -f $(docker ps -aq) 2>/dev/null || true
                 docker rmi cicd-helloworld-webapp:latest 2>/dev/null || true
-                docker load -i /home/ec2-user/cicd-helloworld-webapp-latest.tar
-                docker run -d -p 8200:8080 cicd-helloworld-webapp:latest
             '''
             sh "ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/A4L.pem ec2-user@10.0.0.73 \"$sshScript\""
         }
     }
 }
+
+    stage('Load new Image - Run new Container') {
+                steps {
+                    // SSH to remote server and execute all commands
+                    script {
+                        sshScript = '''
+                    docker load -i /home/ec2-user/cicd-helloworld-webapp-latest.tar
+                    docker run -d -p 8200:8080 cicd-helloworld-webapp:latest
+                '''
+                sh "ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/A4L.pem ec2-user@10.0.0.73 \"$sshScript\""
+            }
+        }
     }
+}
     
     post {
         success {
