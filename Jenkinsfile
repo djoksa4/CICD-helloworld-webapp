@@ -32,6 +32,12 @@ pipeline {
             }
         }
 
+        stage('Remove the previous packed Image from the remote server') {
+            steps {
+                sh """ ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/A4L.pem ec2-user@10.0.0.73 "rm cicd-helloworld-webapp-latest.tar" """
+            }
+        }
+
         stage('Copy Docker Image to Remote Server') {
             steps {
                 sh 'scp -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/A4L.pem cicd-helloworld-webapp-latest.tar ec2-user@10.0.0.73:/home/ec2-user'
@@ -58,21 +64,15 @@ pipeline {
             }
         }
 
-        stage('Remove the previous packed Image') {
-            steps {
-                // Copy Docker image to remote server using scp with key-based authentication
-                sh """ ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/A4L.pem ec2-user@10.0.0.73 "rm cicd-helloworld-webapp-latest.tar" """
-            }
-        }
 
-         stage('Load new Docker Image') {
+        stage('Load new Docker Image') {
             steps {
                 // Copy Docker image to remote server using scp with key-based authentication
                 sh """ ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/A4L.pem ec2-user@10.0.0.73 "docker load -i /home/ec2-user/cicd-helloworld-webapp-latest.tar" """
             }
         }   
 
-         stage('Spin up the new Container') {
+        stage('Spin up the new Container') {
             steps {
                 // Copy Docker image to remote server using scp with key-based authentication
                 sh """ ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/A4L.pem ec2-user@10.0.0.73 "docker run -d -p 8200:8080 cicd-helloworld-webapp:latest" """
