@@ -44,9 +44,9 @@ pipeline {
                 // SSH to remote server and execute all commands
                 script {
                     sshScript = '''
-                if [ "$(docker ps -q)" ]; then docker stop $(docker ps -q); fi
-                docker rm -f $(docker ps -aq) 2>/dev/null || true
-                docker rmi cicd-helloworld-webapp:latest 2>/dev/null || true
+if [ "$(docker ps -q)" ]; then docker stop $(docker ps -q); fi
+docker rm -f $(docker ps -aq) 2>/dev/null || true
+docker rmi cicd-helloworld-webapp:latest 2>/dev/null || true
             '''
             sh "ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/A4L.pem ec2-user@10.0.0.73 \"$sshScript\""
         }
@@ -58,8 +58,8 @@ pipeline {
                     // SSH to remote server and execute all commands
                     script {
                         sshScript = '''
-                    docker load -i /home/ec2-user/cicd-helloworld-webapp-latest.tar
-                    docker run -d -p 8200:8080 cicd-helloworld-webapp:latest
+docker load -i /home/ec2-user/cicd-helloworld-webapp-latest.tar
+docker run -d -p 8200:8080 cicd-helloworld-webapp:latest
                 '''
                 sh "ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/A4L.pem ec2-user@10.0.0.73 \"$sshScript\""
             }
@@ -74,3 +74,4 @@ pipeline {
         }
     }
 }
+
