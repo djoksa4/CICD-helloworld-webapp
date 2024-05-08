@@ -46,21 +46,41 @@ pipeline {
 
         stage('Stop Running Docker Container') {
             steps {
-                sh """ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/A4L.pem ec2-user@10.0.0.73 'docker stop cicd-helloworld-webapp 2>/dev/null' """
-
+                sh """
+                    ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/A4L.pem ec2-user@10.0.0.73 '
+                        #!/bin/bash
+                        if [ "$(docker ps -q -f name=cicd-helloworld-webapp)" ]; then
+                        docker stop cicd-helloworld-webapp
+                        fi
+                    '
+                """
             }
         }
 
         stage('Remove old Docker Container') {
             steps {
-                sh """ ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/A4L.pem ec2-user@10.0.0.73 'docker rm cicd-helloworld-webapp 2>/dev/null' """
+                sh """
+                    ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/A4L.pem ec2-user@10.0.0.73 '
+                        #!/bin/bash
+                        if [ "$(docker ps -aq -f name=cicd-helloworld-webapp)" ]; then
+                        docker rm -f cicd-helloworld-webapp
+                        fi
+                    '
+                """
             }
         }
 
         stage('Remove old Docker Image') {
             steps {
                 // Copy Docker image to remote server using scp with key-based authentication
-                sh """ ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/A4L.pem ec2-user@10.0.0.73 'docker rmi -f cicd-helloworld-webapp:latest 2>/dev/null' """
+                sh """ 
+                    ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/A4L.pem ec2-user@10.0.0.73 '
+                        #!/bin/bash
+                        if docker images -q cicd-helloworld-webapp:latest; then
+                        docker rmi -f cicd-helloworld-webapp:latest
+                        fi
+                    ' 
+                """
             }
         }
 
