@@ -46,16 +46,17 @@ pipeline {
 
         stage('Stop Running Docker Container') {
             steps {
-                sh """
+                sh '''
                     ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/A4L.pem ec2-user@10.0.0.73 '
                         #!/bin/bash
                         if [ "$(docker ps -q -f name=cicd-helloworld-webapp)" ]; then
                         docker stop cicd-helloworld-webapp
                         fi
                     '
-                """
+                '''
             }
         }
+
 
         stage('Remove old Docker Container') {
             steps {
