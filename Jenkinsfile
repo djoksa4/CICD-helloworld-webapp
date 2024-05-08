@@ -59,28 +59,28 @@ pipeline {
 
         stage('Remove old Docker Container') {
             steps {
-                sh """
+                sh '''
                     ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/A4L.pem ec2-user@10.0.0.73 '
                         #!/bin/bash
                         if [ "$(docker ps -aq -f name=cicd-helloworld-webapp)" ]; then
                         docker rm -f cicd-helloworld-webapp
                         fi
                     '
-                """
+                '''
             }
         }
 
         stage('Remove old Docker Image') {
             steps {
                 // Copy Docker image to remote server using scp with key-based authentication
-                sh """ 
+                sh ''' 
                     ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/A4L.pem ec2-user@10.0.0.73 '
                         #!/bin/bash
                         if docker images -q cicd-helloworld-webapp:latest; then
                         docker rmi -f cicd-helloworld-webapp:latest
                         fi
                     ' 
-                """
+                '''
             }
         }
 
