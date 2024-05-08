@@ -57,7 +57,6 @@ pipeline {
             }
         }
 
-
         stage('Remove old Docker Container') {
             steps {
                 sh """
