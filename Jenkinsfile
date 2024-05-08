@@ -2,6 +2,13 @@ pipeline {
     agent any
     
     stages {
+
+        stage('BRAH') {
+            steps {
+                sh 'echo "BRAH"'
+            }
+        }
+
         stage('Checkout') {
             steps {
                 // Checkout your source code repository
